@@ -61,7 +61,7 @@ int main() {
   double MAX_Speed = 49.5;
 
   // Minimal speed for lane change
-  double MIN_Speed = 45.0;
+  double MIN_Speed = 44.0;
 
   h.onMessage([&MIN_Speed,&MAX_Speed,&lane,&ref_vel,&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
@@ -142,21 +142,21 @@ int main() {
                   }
                 }
               }
+              else
+              {
+                lane = left_lane;
+              }
+            }
             else
             {
-              lane = left_lane;
+              bool too_close_right = CheckTooClose(sensor_fusion, right_lane, car_s, prev_size, true);
+              if(too_close_right || ref_vel <= MIN_Speed)
+              {}// Stay in lane
+              else
+              {
+                lane = right_lane;
+              }
             }
-          }
-          else
-          {
-            bool too_close_right = CheckTooClose(sensor_fusion, right_lane, car_s, prev_size, true);
-            if(too_close_right || ref_vel <= MIN_Speed)
-            {}// Stay in lane
-            else
-            {
-              lane = right_lane;
-            }
-          }
           ref_vel -= .224;
           }
           else if (ref_vel <= MAX_Speed)
